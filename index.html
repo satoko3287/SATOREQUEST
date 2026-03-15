@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SATOREQUEST 数秘キャラ鑑定</title>
+    <style>
+        :root {
+            --game-gold: #ffcf4b;
+            --game-blue: #1a2a6c;
+            --game-bg: #0f0c29;
+            --text-color: #e0e0e0;
+            --accent-red: #ff4b2b;
+        }
+        
+        body {
+            font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
+            background: linear-gradient(to bottom, #0f0c29, #302b63, #24243e);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            border: 2px solid var(--game-gold);
+            box-shadow: 0 0 20px rgba(255, 207, 75, 0.2);
+            width: 100%;
+            max-width: 600px;
+            box-sizing: border-box;
+        }
+        
+        h1 {
+            text-align: center;
+            color: var(--game-gold);
+            margin-bottom: 0px;
+            font-size: 2.5rem;
+            letter-spacing: 5px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .quote {
+            text-align: center;
+            color: var(--game-gold);
+            font-size: 0.75rem;
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        .sub-title {
+            text-align: center;
+            color: #ccc;
+            margin-bottom: 25px;
+            font-size: 0.95rem;
+            font-weight: bold;
+        }
+        
+        .input-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: bold; font-size: 0.85rem; color: var(--game-gold); }
+        
+        /* 入力欄のスタイル */
+        input {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid var(--game-gold);
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            font-size: 1rem;
+            color: white;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        /* ★カレンダーアイコンを見えるようにする修正★ */
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(1); /* 黒いアイコンを白く反転させる */
+            cursor: pointer;
+        }
+        
+        button {
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(45deg, #f09819, #edde5d);
+            color: #333;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.3rem;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(255, 207, 75, 0.4);
+            transition: 0.3s;
+            margin-top: 10px;
+            text-transform: uppercase;
+        }
+        
+        button:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 20px rgba(255, 207, 75, 0.6);
+        }
+
+        #result-area { display: none; margin-top: 30px; animation: portalIn 1s ease-out; }
+        @keyframes portalIn {
+            from { opacity: 0; transform: scale(0.8); filter: brightness(2); }
+            to { opacity: 1; transform: scale(1); filter: brightness(1); }
+        }
+
+        .char-card {
+            text-align: center;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid var(--game-gold);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 25px;
+        }
+        
+        .char-img {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 3px solid var(--game-gold);
+            box-shadow: 0 0 15px var(--game-gold);
+            margin-bottom: 20px;
+        }
+        
+        .theme-name { font-size: 1rem; color: var(--game-gold); text-decoration: underline; }
+        .char-name { font-size: 2rem; color: #fff; margin: 15px 0; }
+        .status-badge {
+            background: var(--accent-red);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            box-shadow: 0 0 10px var(--accent-red);
+        }
+        
+        .description {
+            text-align: left;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            line-height: 1.8;
+            color: #eee;
+            border: 1px inset var(--game-gold);
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-item {
+            background: rgba(255, 207, 75, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 3px solid var(--game-gold);
+        }
+        
+        .stat-label { font-size: 0.7rem; color: var(--game-gold); display: block; margin-bottom: 4px; }
+        .stat-val { font-size: 1.2rem; font-weight: bold; color: #fff; letter-spacing: 1px; }
+
+        .footer-guide {
+            width: 100%;
+            max-width: 600px;
+            margin-top: 40px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 15px;
+            border: 1px solid #444;
+            font-size: 0.8rem;
+            color: #aaa;
+        }
+        .footer-guide h3 { color: var(--game-gold); font-size: 1rem; margin-top: 0; }
+        .footer-guide ul { list-style: "▶ "; padding-left: 20px; }
+        .footer-guide li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>SATORIQUEST</h1>
+    <div class="quote">『人生はロールプレイングゲーム！』ｂｙ堀井雄二氏</div>
+    <div class="sub-title">〜 人生チャレンジキャラ数秘鑑定 〜</div>
+    
+    <div class="input-group">
+        <label>冒険者の誕生日</label>
+        <input type="date" id="birthdate" value="1990-01-01">
+    </div>
+    
+    <div class="input-group">
+        <label>真実の名（旧姓・ひらがな）</label>
+        <input type="text" id="name-kana" placeholder="やまだ はなこ">
+    </div>
+
+    <button onclick="calculate()">運命を鑑定する</button>
+
+    <div id="result-area">
+        <div class="char-card">
+            <img id="res-img" src="" alt="召喚キャラ" class="char-img">
+            <div class="theme-name" id="res-theme"></div>
+            <div class="char-name" id="res-char"></div>
+            <div class="status-badge" id="res-status"></div>
+            <div class="description" id="res-desc"></div>
+        </div>
+
+        <div class="stat-grid">
+            <div class="stat-item"><span class="stat-label">人生のテーマ(LP)</span><span class="stat-val" id="val-lp"></span></div>
+            <div class="stat-item"><span class="stat-label">檻(幼少期)</span><span class="stat-val" id="val-ori"></span></div>
+            <div class="stat-item"><span class="stat-label">表現数(D)</span><span class="stat-val" id="val-d"></span></div>
+            <div class="stat-item"><span class="stat-label">願望数(S)</span><span class="stat-val" id="val-s"></span></div>
+            <div class="stat-item"><span class="stat-label">人格数(P)</span><span class="stat-val" id="val-p"></span></div>
+            <div class="stat-item"><span class="stat-label">成熟数(M)</span><span class="stat-val" id="val-m"></span></div>
+        </div>
+    </div>
+</div>
+
+<div class="footer-guide">
+    <h3>鑑定の書：計算の理</h3>
+    <ul>
+        <li><strong>檻（幼少期）:</strong> 「誕生月＋誕生日」の魔力を合算</li>
+        <li><strong>ライフパス（LP）:</strong> 「生年月日」の全魔力を合算</li>
+        <li><strong>表現数（D）:</strong> 「名の全アルファベット」の魔力を合算</li>
+        <li><strong>願望数（S）:</strong> 「名の母音」の魔力を抽出合算</li>
+        <li><strong>人格数（P）:</strong> 「名の子音」の魔力を抽出合算</li>
+        <li><strong>成熟数（M）:</strong> 「LP ＋ D」の魔力を統合合算</li>
+    </ul>
+    <div style="text-align:center; margin-top:10px;">※ゾロ目（11, 22, 33）は聖なる数としてそのまま扱います。</div>
+</div>
+
+<script>
+// MASTER_DATAは以前提供したものをそのままここに入れてください
+const MASTER_DATA = {"1": {"themeName": "勇敢なる戦士", "characters": {"1": {"name": "理想に縛られた戦士", "status": "自己否定・暴走気味", "desc": "常に完璧を求め、戦い続ける。だがその刃は自分自身をも傷つける。“完璧でなくても前に進める”と知ったとき、真の勇者となる。"}, "2": {"name": "顔色をうかがう戦士", "status": "優柔不断・依存", "desc": "戦いたいのに「みんなはどう思う？」と足が止まる。本音で立ったとき、初めて本当の力を発揮する。"}, "3": {"name": "ノリと勢いの戦士", "status": "散漫・ドタキャン癖", "desc": "「やるぞ！」と突っ走るが、すぐに別のことに気を取られる。集中の火を絶やさなければ、どんな敵にも勝てる。"}, "4": {"name": "一歩が重たい戦士", "status": "石橋を叩きすぎて壊す", "desc": "準備に準備を重ねているうちに、チャンスは過ぎていく。勇気ある一歩が、すべての扉を開く。"}, "5": {"name": "風まかせの戦士", "status": "責任逃れ・気分屋", "desc": "束縛を嫌ってあちこちさまよう。「決めてやり抜く」覚悟が、力の本質を引き出す。"}, "6": {"name": "恋に縛られた戦士", "status": "過度な献身・自己喪失", "desc": "「誰かのために」が強すぎて、自分の道が見えなくなる。“自分を愛する”という剣を手にしたとき、最強の戦士になる。"}, "7": {"name": "背中を見せない戦士", "status": "孤立・過剰な自立", "desc": "「ひとりでやったほうが早い」と全部抱え込む。信頼して“背中を預ける”ことで、真の連携が生まれる。"}, "8": {"name": "威圧する戦士", "status": "権力中毒・支配欲", "desc": "誰よりも強くあろうとして、力で押し通そうとする。「任せる強さ」を知ったとき、リーダーとして覚醒する。"}, "9": {"name": "すべてを背負う戦士", "status": "自己放棄・抜け殻状態", "desc": "「みんなのために」が重すぎて、自分を忘れる。“自分も救う”ことができたとき、最後の敵を倒せる。"}}},"2": {"themeName": "調和のエンチャンター", "characters": {"1": {"name": "正しさに囚われたエンチャンター", "status": "過剰な気遣い・潔癖思考", "desc": "「こうあるべき」と人間関係にまで完璧を求めてしまう。"}, "2": {"name": "空気に溶けるエンチャンター", "status": "自己犠牲・気づかれない怒り", "desc": "人を優先しすぎて自分が透明になっていく。"}, "3": {"name": "ひらめき一閃のエンチャンター", "status": "気まぐれ魔法・集中欠如", "desc": "直感に従って魔法を使うが、気まぐれすぎて信用されない。"}, "4": {"name": "慎重すぎるエンチャンター", "status": "動けない・無難志向", "desc": "場を整えるつもりが、自分の不安で場を止めてしまう。"}, "5": {"name": "風まかせのエンチャンター", "status": "単独行動・協調性ゼロ", "desc": "自由奔放でつかみどころがない。"}, "6": {"name": "愛に飢えたエンチャンター", "status": "共依存・愛され魔法依存", "desc": "「好きでいてくれる人のため」に魔法を使いすぎて枯れる。"}, "7": {"name": "孤高のエンチャンター", "status": "心の壁・疑い深さ", "desc": "場にいながら心を閉ざしてしまう。"}, "8": {"name": "支配するエンチャンター", "status": "押しつけ魔法・支配的エネルギー", "desc": "調和ではなく「都合の良い状態」を作ろうとしてしまう。"}, "9": {"name": "祈りすぎたエンチャンター", "status": "燃え尽き・感情のフタ", "desc": "人のために魔法を使い続け、自分を空っぽにしてしまう。"}}},"3": {"themeName": "無邪気な吟遊詩人", "characters": {"1": {"name": "完璧を求めすぎた吟遊詩人", "status": "自己否定・創造の萎縮", "desc": "楽しく表現したいのに「ちゃんとしなきゃ」で声が出ない。"}, "2": {"name": "顔色うかがいの吟遊詩人", "status": "他人軸化・洞察希釈", "desc": "“誰かのための歌”にこだわりすぎて、自分の声を見失う。"}, "3": {"name": "ノープラン吟遊詩人", "status": "飽きっぽさ・責任回避", "desc": "楽しければOK！でも続かない。"}, "4": {"name": "ひっこみ思案な吟遊詩人", "status": "出たがりなのに出られない", "desc": "心の中では踊っているのに、いつも一歩が出ない。"}, "5": {"name": "風まかせの吟遊詩人", "status": "空気読めない芸人・自分勝手", "desc": "思いつくままにパフォーマンスしては去っていく。"}, "6": {"name": "愛されたい吟遊詩人", "status": "承認欲求魔・表現に依存", "desc": "拍手がないと生きられない。"}, "7": {"name": "孤高の吟遊詩人", "status": "斜に構える・孤高のパフォーマー", "desc": "「わかってもらえない」が口ぐせ。"}, "8": {"name": "独壇場の吟遊詩人", "status": "俺の世界！強制共有型", "desc": "全部“自分主導”じゃないと気が済まない。"}, "9": {"name": "誰かのために歌い続ける吟遊詩人", "status": "感情を歌に乗せられない", "desc": "「みんなのために」と歌い続け、燃え尽きてしまう。"}}},"4": {"themeName": "大地の石工", "characters": {"1": {"name": "設計図に縛られた石工", "status": "完璧設計症・進まない職人", "desc": "理想の完成形を追いすぎて、一歩が踏み出せない。"}, "2": {"name": "優しすぎる石工", "status": "人任せ施工・流され屋", "desc": "「それでいいの？」と人に言われるたび、積み直してしまう。"}, "3": {"name": "気分屋の石工", "status": "積みかけ放置・カオス建築", "desc": "今日のブロック、昨日のと形が違う！"}, "4": {"name": "石橋を叩きすぎる石工", "status": "足踏み癖・未完成主義", "desc": "あれもこれも準備中。"}, "5": {"name": "ルール無用の石工", "status": "即興積み・崩壊の塔", "desc": "「形にしなきゃ」が苦手で、自由奔放に積み続ける。"}, "6": {"name": "誰かの期待を積む石工", "status": "他人起点の基礎設計", "desc": "「あなたのために」と積み続けて、自分の居場所が崩れていく。"}, "7": {"name": "孤高の石工", "status": "完全孤立工法・連携不能", "desc": "一人で完璧を目指すが、壁の向こうが見えない。"}, "8": {"name": "俺様設計 of the 石工", "status": "命令施工・マウント設計", "desc": "「こうじゃなきゃ！」と他者を排除する。"}, "9": {"name": "誰かの家を作り続ける石工", "status": "裏方のまま終わる・燃え尽き症候群", "desc": "尽くして尽くして、自分の暮らす場所がなくなる。"}}},"5": {"themeName": "自由なる旅人", "characters": {"1": {"name": "理想を追いすぎた旅人", "status": "理想停滞・意味依存", "desc": "「この旅に意味は？」と考えすぎて出発が無期限延期。"}, "2": {"name": "顔色うかがいの旅人", "status": "同調過多・自分喪失", "desc": "安全で無難な進路に合わせるほど、胸が躍らない旅になる。"}, "3": {"name": "ノープラン放浪ের旅人", "status": "刺激依存・成果拡散", "desc": "刺激を追うほど足跡は点々、何も残らない。"}, "4": {"name": "石橋を叩きすぎる旅人", "status": "過剰安全・出発不能", "desc": "情報収集が無限ループとなり、最良の季節を逃す。"}, "5": {"name": "風まかせの逃亡旅人", "status": "責任回避・信頼崩壊", "desc": "自由を言い訳に約束を手放すほど、自由は“独り”に近づく。"}, "6": {"name": "愛に縛られた旅人", "status": "共依存・進路凍結", "desc": "「一緒じゃなきゃ無理」で足が止まる。"}, "7": {"name": "孤高の観察旅人", "status": "思索偏重・体験欠如", "desc": "机上では雄弁なのに、現場では足がすくむ。"}, "8": {"name": "支配ルートの旅人", "status": "独断専行・協働破綻", "desc": "指示口調で仲間が離脱し、旅は縮小再生産に。"}, "9": {"name": "奉仕ばかりの旅人", "status": "過剰配慮・燃え尽き", "desc": "ありがとうの山の影で、心は空っぽに。"}}},"6": {"themeName": "愛のヒーラー", "characters": {"1": {"name": "完璧癒しのヒーラー", "status": "完璧依存・自己否定", "desc": "「まだ足りない」と光をしまい込むほど、場は冷えていく。"}, "2": {"name": "顔色うかがいヒーラー", "status": "他人軸過多・境界消失", "desc": "だれかの望みに寄り添うほど、あなたの音色が小さくなる。"}, "3": {"name": "気まぐれヒーラー", "status": "手法乱立・結果不定", "desc": "新しい流行に心が踊るたび、道は枝分かれしていく。"}, "4": {"name": "慎重すぎるヒーラー", "status": "永久準備・機会損失", "desc": "書棚は満ちていくのに、だれかの涙に触れる機会は遠のく。"}, "5": {"name": "風まかせヒーラー", "status": "継続断絶・信頼低下", "desc": "自由の風に身を任せるほど、物語は途切れがちになる。"}, "6": {"name": "愛に溺れるヒーラー", "status": "承認渇望・共依存", "desc": "喜ばれるほど、あなたの杯は静かに空になっていく。"}, "7": {"name": "孤高のヒーラー", "status": "感覚孤立・誤解蓄積", "desc": "あなたの手は語れるのに、言葉が追いつかず誤解が積もる。"}, "8": {"name": "支配ヒーラー", "status": "強圧介入・反発", "desc": "正しさを握りしめるほど、相手の生命力は縮こまる。"}, "9": {"name": "自己犠牲ヒーラー", "status": "共感疲労・燃え尽き", "desc": "だれかの痛みを抱きしめ続け、ある朝ふっと色が消える。"}}},"7": {"themeName": "孤独の賢者", "characters": {"1": {"name": "理想を抱えすぎた賢者", "status": "理想膨張・発表先延ばし", "desc": "机上の宇宙は果てしないのに、灯りは誰にも届かない。"}, "2": {"name": "顔色うかがい賢者", "status": "他人軸化・洞察希釈", "desc": "拍手の音を測るほど、真理の声が小さくなる。"}, "3": {"name": "気まぐれ研究賢者", "status": "焦点散乱・知見拡散", "desc": "断片は増えるのに、地図は描けない。"}, "4": {"name": "慎重すぎる賢者", "status": "永久準備・踏み出せない", "desc": "データは満ちても、扉は閉じたまま。"}, "5": {"name": "放浪漂流の賢者", "status": "知識散逸・体系化不全", "desc": "旅路は豊かなのに、どこにも帰らない。"}, "6": {"name": "愛に溺れる賢者", "status": "共依存・視界濁り", "desc": "喜ばれたいほど、泉はにごる。"}, "7": {"name": "閉門の賢者", "status": "孤高固着・対話拒否", "desc": "塔の中で真理は輝くが、世界は暗いまま。"}, "8": {"name": "支配したがる賢者", "status": "権威同一化・反発連鎖", "desc": "盾で守る教義は、やがて自らを傷つける。"}, "9": {"name": "奉仕燃え尽き賢者", "status": "過剰奉仕・枯渇", "desc": "灯を配るほど、手元の灯芯が短くなる。"}}},"8": {"themeName": "力の王", "characters": {"1": {"name": "理想に縛られた王", "status": "理想膨張・決断停滞", "desc": "瑠璃色の青写真は増えるのに、城門は開かれない。"}, "2": {"name": "顔色うかがいの王", "status": "迎合過多・方針迷走", "desc": "拍手の数を測るほど、国の芯が薄くなる。"}, "3": {"name": "気まぐれ指令の王", "status": "指令変転・現場混乱", "desc": "号令は華やかでも、翌朝には地図が塗り替わる。"}, "4": {"name": "慎重すぎる王", "status": "過剰安全・機会逸失", "desc": "門外の嵐を眺めるうち、季節は何度も過ぎていく。"}, "5": {"name": "風まかせの王", "status": "責任回避・不在統治", "desc": "旅は気ままで自由だが、玉座の灯は心細い。"}, "6": {"name": "愛に依存する王", "status": "承認渇望・介入過多", "desc": "賞賛を浴びるほど、国は息苦しくなる。"}, "7": {"name": "孤高の王", "status": "情報遮断・孤立硬化", "desc": "高塔の窓から見える世界は、やがて一点になる。"}, "8": {"name": "絶対君主の王", "status": "恐怖統治・反発増幅", "desc": "震える沈黙はやがて火種を孕む。"}, "9": {"name": "奉仕燃え尽き王", "status": "過労献身・枯渇", "desc": "夜明け前、王の灯だけが細く揺れている。"}}},"9": {"themeName": "慈悲の僧侶", "characters": {"1": {"name": "理想を抱えすぎた僧侶", "status": "儀式過多・救い遅延", "desc": "一音の乱れを恐れるほど、祈りは遅れて届く。"}, "2": {"name": "顔色うかがい僧侶", "status": "他人軸説法・芯喪失", "desc": "迎合の言葉はやさしいが、火は小さい。"}, "3": {"name": "気まぐれ祈り僧侶", "status": "散漫祈念・集中欠落", "desc": "香の煙は立つのに、柱は立たない。"}, "4": {"name": "慎重すぎる僧侶", "status": "準備過剰・手遅れ癒し", "desc": "教典の頁は増えるが、門前の涙は乾かない。"}, "5": {"name": "風まかせの僧侶", "status": "巡礼漂流・定点不在", "desc": "訪れた町ごとに灯はともるが、すぐ消える。"}, "6": {"name": "愛に依存する僧侶", "status": "承認渇き・慈悲減衰", "desc": "賛辞が増えるほど、胸の器は乾いていく。"}, "7": {"name": "孤高の僧侶", "status": "沈黙固定・導き不足", "desc": "深い悟りはそこにあるのに、誰も知らない。"}, "8": {"name": "支配説教の僧侶", "status": "恐れの教化・反発増殖", "desc": "震えで保たれた秩序は、やがて心を閉ざす。"}, "9": {"name": "奉仕燃え尽き僧侶", "status": "過剰奉仕・自己喪失", "desc": "誰かの灯を守るたび、自分の灯芯が短くなる。"}}}}
+
+const kanaMap = {"あ":"a","い":"i","う":"u","え":"e","お":"o","か":"ka","き":"ki","く":"ku","け":"ke","こ":"ko","さ":"sa","し":"shi","す":"su","せ":"se","そ":"so","た":"ta","ち":"chi","つ":"tsu","て":"te","と":"to","な":"na","に":"ni","ぬ":"nu","ね":"ne","の":"no","は":"ha","ひ":"hi","ふ":"fu","へ":"he","ほ":"ho","ま":"ma","み":"mi","む":"mu","め":"me","も":"mo","や":"ya","ゆ":"yu","よ":"yo","ら":"ra","り":"ri","る":"ru","れ":"re","ろ":"ro","わ":"wa","を":"o","ん":"n","が":"ga","ぎ":"gi","ぐ":"gu","げ":"ge","ご":"go","ざ":"za","じ":"ji","ず":"zu","ぜ":"ze","ぞ":"zo","だ":"da","ぢ":"ji","づ":"zu","で":"de","ど":"do","ば":"ba","び":"bi","ぶ":"bu","べ":"be","ぼ":"bo","ぱ":"pa","ぴ":"pi","ぷ":"pu","ぺ":"pe","ぽ":"po","きゃ":"kya","きゅ":"kyu","きょ":"kyo","しゃ":"sha","しゅ":"shu","しょ":"sho","ちゃ":"cha","ちゅ":"chu","ちょ":"cho","にゃ":"nya","にゅ":"nyu","にょ":"nyo","ひゃ":"hya","ひゅ":"hyu","ひょ":"hyo","みゃ":"mya","みゅ":"myu","みょ":"myo","りゃ":"rya","りゅ":"ryu","りょ":"ryo","ぎゃ":"gya","ぎゅ":"gyu","ぎょ":"gyo","じゃ":"ja","じゅ":"ju","じょ":"jo","びゃ":"bya","びゅ":"byu","びょ":"byo","ぴゃ":"pya","ぴゅ":"pyu","ぴょ":"pyo"};
+const numMap = {a:1,j:1,s:1,b:2,k:2,t:2,c:3,l:3,u:3,d:4,m:4,v:4,e:5,n:5,w:5,f:6,o:6,x:6,g:7,p:7,y:7,h:8,q:8,z:8,i:9,r:9};
+const vowels = ['a','i','u','e','o'];
+
+function getRoot(n) {
+    if (isNaN(n)) return 0;
+    if (n <= 9 || [11, 22, 33].includes(n)) return n;
+    let s = [...n.toString()].reduce((a,b)=>a+parseInt(b),0);
+    return getRoot(s);
+}
+
+function calculate() {
+    try {
+        const bday = document.getElementById('birthdate').value;
+        const inputName = document.getElementById('name-kana').value.trim();
+        const kana = inputName.replace(/\s/g,"");
+        
+        if(!bday || !kana) {
+            alert("冒険者よ、誕生日と名を記すのだ。");
+            return;
+        }
+
+        const [y, m, d] = bday.split('-');
+        const oriRaw = parseInt(m) + parseInt(d);
+        const lpRaw = (y+m+d).split('').reduce((a,b)=>a+parseInt(b),0);
+        const lpFinal = getRoot(lpRaw);
+        const oriFinal = getRoot(oriRaw);
+
+        let roma = "";
+        for(let i=0; i<kana.length; i++){
+            let d2 = kana.substring(i,i+2);
+            if(kanaMap[d2]){ roma+=kanaMap[d2]; i++; }
+            else if(kanaMap[kana[i]]){ roma+=kanaMap[kana[i]]; }
+        }
+        
+        let dSum=0, sSum=0, pSum=0;
+        for(let c of roma){
+            let v = numMap[c];
+            if(v){ 
+                dSum+=v; 
+                if(vowels.includes(c)) sSum+=v; else pSum+=v; 
+            }
+        }
+
+        const dFinal = getRoot(dSum);
+        const sFinal = getRoot(sSum);
+        const pFinal = getRoot(pSum);
+        const mFinal = getRoot(lpFinal + dFinal);
+
+        document.getElementById('val-lp').innerText = `${lpRaw} ／ ${lpFinal}`;
+        document.getElementById('val-ori').innerText = `${oriRaw} ／ ${oriFinal}`;
+        document.getElementById('val-d').innerText = `${dSum} ／ ${dFinal}`;
+        document.getElementById('val-s').innerText = `${sSum} ／ ${sFinal}`;
+        document.getElementById('val-p').innerText = `${pSum} ／ ${pFinal}`;
+        document.getElementById('val-m').innerText = `${lpFinal+dFinal} ／ ${mFinal}`;
+
+        const tIdx = (lpFinal > 9 && ![11, 22, 33].includes(lpFinal)) ? getRoot(lpFinal) : (lpFinal > 9 ? getRoot(lpFinal) : lpFinal);
+        const oIdx = (oriFinal > 9) ? getRoot(oriFinal) : oriFinal;
+        
+        const themeData = MASTER_DATA[tIdx] || MASTER_DATA["1"];
+        const charData = themeData.characters[oIdx] || themeData.characters["1"];
+
+        document.getElementById('res-img').src = `チャレンジキャラ0${tIdx}.jpg`;
+        document.getElementById('res-theme').innerText = `クラス：${themeData.themeName}`;
+        document.getElementById('res-char').innerText = charData.name;
+        document.getElementById('res-status').innerText = `状態：${charData.status}`;
+        document.getElementById('res-desc').innerText = charData.desc;
+
+        document.getElementById('result-area').style.display = 'block';
+        window.scrollTo({ top: document.getElementById('result-area').offsetTop - 20, behavior: 'smooth' });
+
+    } catch (e) {
+        console.error(e);
+        alert("鑑定中に魔力エラーが発生しました。");
+    }
+}
+</script>
+</body>
+</html>
