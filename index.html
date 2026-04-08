@@ -344,7 +344,8 @@ function calculate() {
         const oriRaw = parseInt(m) + parseInt(d);
         const lpRaw = (y+m+d).split('').reduce((a,b)=>a+parseInt(b),0);
         const lpFinal = getRoot(lpRaw);
-        const oriFinal = getRoot(oriRaw);
+        const oriFinalRaw = getRoot(oriRaw);
+        const oriFinal = [11,22,33,44].includes(oriFinalRaw) ? getRoot([...oriFinalRaw.toString()].reduce((a,b)=>a+parseInt(b),0)) : oriFinalRaw;
 
         let roma = "";
         for(let i=0; i<kana.length; i++){
