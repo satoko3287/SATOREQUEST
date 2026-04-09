@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>プレゼント｜SATOREQUEST</title>
+    <style>
+        :root {
+            --gold: #ffcf4b;
+            --bg: #0f0c29;
+            --card: rgba(255,255,255,0.05);
+            --border: rgba(255,207,75,0.3);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
+            background: linear-gradient(to bottom, #0f0c29, #302b63, #24243e);
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 30px 20px 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* ロゴ */
+        .logo {
+            font-size: 0.75rem;
+            letter-spacing: 4px;
+            color: var(--gold);
+            opacity: 0.7;
+            margin-bottom: 20px;
+        }
+
+        .wrap { width: 100%; max-width: 500px; }
+
+        /* プレゼントバッジ */
+        .present-badge {
+            display: inline-block;
+            background: var(--gold);
+            color: #0f0c29;
+            font-size: 0.75rem;
+            font-weight: bold;
+            padding: 4px 14px;
+            border-radius: 20px;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        /* タイトル */
+        .present-title {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #fff;
+            line-height: 1.4;
+            margin-bottom: 6px;
+        }
+        .present-sub {
+            font-size: 0.85rem;
+            color: #aaa;
+            margin-bottom: 24px;
+        }
+
+        /* タイマー */
+        .timer-block {
+            background: rgba(255,207,75,0.08);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 22px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .timer-icon { font-size: 1.3rem; flex-shrink: 0; }
+        .timer-label {
+            font-size: 0.75rem;
+            color: var(--gold);
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+        .timer-count {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #fff;
+            letter-spacing: 2px;
+            font-variant-numeric: tabular-nums;
+        }
+        .timer-count.expired { color: #ff6b6b; font-size: 1rem; }
+
+        /* 動画エリア */
+        .video-block {
+            background: #000;
+            border-radius: 14px;
+            overflow: hidden;
+            margin-bottom: 22px;
+            position: relative;
+            padding-top: 56.25%; /* 16:9 */
+        }
+        .video-block iframe {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            border: none;
+        }
+        .video-placeholder {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.04);
+            color: #666;
+            font-size: 0.85rem;
+            gap: 10px;
+        }
+        .video-placeholder .play-icon { font-size: 2.5rem; }
+
+        /* メッセージ */
+        .message-block {
+            background: rgba(26,42,108,0.5);
+            border-left: 3px solid var(--gold);
+            border-radius: 0 12px 12px 0;
+            padding: 18px 20px;
+            margin-bottom: 24px;
+        }
+        .message-label {
+            font-size: 0.72rem;
+            color: var(--gold);
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        .message-text {
+            font-size: 0.88rem;
+            line-height: 1.85;
+            color: #ccc;
+        }
+
+        /* 感想CTAブロック */
+        .kanso-block {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px 22px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .kanso-title {
+            font-size: 1rem;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+        .kanso-sub {
+            font-size: 0.82rem;
+            color: #999;
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+
+        /* 感想フォームリンクボタン */
+        .kanso-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: var(--gold);
+            color: #0f0c29;
+            font-size: 0.95rem;
+            font-weight: bold;
+            padding: 16px 24px;
+            border-radius: 50px;
+            text-decoration: none;
+            margin-bottom: 12px;
+            transition: opacity 0.2s;
+        }
+        .kanso-btn:active { opacity: 0.8; }
+        .kanso-note {
+            font-size: 0.75rem;
+            color: #666;
+        }
+
+        /* 区切り */
+        .divider {
+            height: 1px;
+            background: var(--border);
+            margin: 28px 0;
+        }
+
+        /* 次回予告 */
+        .next-block {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 18px 20px;
+            margin-bottom: 20px;
+        }
+        .next-label {
+            font-size: 0.72rem;
+            color: #888;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        .next-text {
+            font-size: 0.9rem;
+            color: #ddd;
+            line-height: 1.7;
+        }
+        .next-text strong { color: var(--gold); }
+    </style>
+</head>
+<body>
+    <p class="logo">SATOREQUEST</p>
+    <div class="wrap" id="content">
+        <div style="text-align:center;padding:60px 20px;color:#888">読み込み中...</div>
+    </div>
+
+<script>
+// ============================================================
+// ★ ここを編集してページをカスタマイズ ★
+// ============================================================
+const CONFIG = {
+    presentNo:   "①",           // プレゼント番号（①②③）
+    title:       "あなたのキャラクター設定、\n5年後どうなる？",
+    sub:         "Anti-vision体験｜目安15分",
+    youtubeId:   "",             // ★ YouTubeの動画ID（例: dQw4w9WgXcQ）
+    deadlineHours: 48,           // 視聴期限（登録から何時間後か）
+    deadlineMidnight: true,      // true = 翌々日の0時00分を期限にする
+    message:     `気がつくと、1年経ってた。また。\n\n「変わりたい」って思って、YouTube見て、本を読んで。\nなのに気づいたら、また同じ毎日にいる。\n\n──これ、意志が弱いからじゃないんです。\n変わらないようにしている「設定」が、自分の中にあっただけ。\n\n今日は、その問いを渡します。ただ、眺めてみてください。`,
+    kansoUrl:    "",             // ★ Google フォームURL
+    kansoQ1:     "聴いてみて、どうでしたか？（一言でOK）",
+    nextText:    `感想を送ると、次のプレゼント\n<strong>「なぜそのキャラクター設定で動いてしまうのか」</strong>\nをお届けします。`,
+};
+// ============================================================
+
+function getDeadline() {
+    const now = new Date();
+    if (CONFIG.deadlineMidnight) {
+        // 翌々日の0時00分
+        const d = new Date(now);
+        d.setDate(d.getDate() + 2);
+        d.setHours(0, 0, 0, 0);
+        return d;
+    }
+    return new Date(now.getTime() + CONFIG.deadlineHours * 3600 * 1000);
+}
+
+function pad(n) { return String(n).padStart(2, '0'); }
+
+function updateTimer(el, deadline) {
+    const diff = deadline - Date.now();
+    if (diff <= 0) {
+        el.textContent = '視聴期限が過ぎています';
+        el.classList.add('expired');
+        return;
+    }
+    const h = Math.floor(diff / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    const s = Math.floor((diff % 60000) / 1000);
+    el.textContent = `${pad(h)}:${pad(m)}:${pad(s)}`;
+}
+
+// ページ描画
+const cfg = CONFIG;
+const deadline = getDeadline();
+const titleLines = cfg.title.replace(/\n/g, '<br>');
+const msgLines   = cfg.message.replace(/\n/g, '<br>');
+const nextLines  = cfg.nextText.replace(/\n/g, '<br>');
+
+const videoHTML = cfg.youtubeId
+    ? `<iframe src="https://www.youtube.com/embed/${cfg.youtubeId}?rel=0" allowfullscreen></iframe>`
+    : `<div class="video-placeholder"><span class="play-icon">▶</span><span>YouTubeのIDを設定してください</span></div>`;
+
+document.getElementById('content').innerHTML = `
+    <span class="present-badge">プレゼント ${cfg.presentNo}</span>
+    <h1 class="present-title">${titleLines}</h1>
+    <p class="present-sub">${cfg.sub}</p>
+
+    <div class="timer-block">
+        <div class="timer-icon">⏰</div>
+        <div>
+            <p class="timer-label">視聴期限まで</p>
+            <p class="timer-count" id="timer">--:--:--</p>
+        </div>
+    </div>
+
+    <div class="video-block">${videoHTML}</div>
+
+    <div class="message-block">
+        <p class="message-label">さとこより</p>
+        <p class="message-text">${msgLines}</p>
+    </div>
+
+    <div class="kanso-block">
+        <p class="kanso-title">感想を送って、次へ進む</p>
+        <p class="kanso-sub">
+            ${cfg.kansoQ1}<br>
+            一言でOKです。聴いた感想を教えてください。
+        </p>
+        <a class="kanso-btn" href="${cfg.kansoUrl || '#'}" target="_blank" rel="noopener">
+            📝 感想を送る（1分で完了）
+        </a>
+        <p class="kanso-note">送信後、次のプレゼントのご案内が届きます</p>
+    </div>
+
+    <div class="next-block">
+        <p class="next-label">次のプレゼント</p>
+        <p class="next-text">${nextLines}</p>
+    </div>
+`;
+
+// タイマー更新
+const timerEl = document.getElementById('timer');
+updateTimer(timerEl, deadline);
+setInterval(() => updateTimer(timerEl, deadline), 1000);
+</script>
+</body>
+</html>
