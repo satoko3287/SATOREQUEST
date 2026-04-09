@@ -187,6 +187,55 @@
         .footer-guide ul { list-style: "▶ "; padding-left: 20px; }
         .footer-guide li { margin-bottom: 8px; }
 
+        .ifthen-section {
+            margin-top: 20px;
+            padding: 22px 20px;
+            background: rgba(255, 207, 75, 0.06);
+            border: 1px solid rgba(255, 207, 75, 0.4);
+            border-radius: 14px;
+        }
+        .ifthen-title {
+            font-size: 0.85rem;
+            color: var(--game-gold);
+            text-align: center;
+            margin: 0 0 4px 0;
+            letter-spacing: 1px;
+        }
+        .ifthen-label {
+            font-size: 1rem;
+            font-weight: bold;
+            color: #fff;
+            text-align: center;
+            margin: 0 0 16px 0;
+        }
+        .ifthen-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .ifthen-badge {
+            flex-shrink: 0;
+            font-size: 0.75rem;
+            font-weight: bold;
+            padding: 3px 8px;
+            border-radius: 4px;
+            margin-top: 2px;
+        }
+        .if-badge   { background: rgba(255,255,255,0.15); color: #ccc; }
+        .then-badge { background: var(--game-gold); color: #0f0c29; }
+        .ifthen-text {
+            font-size: 0.9rem;
+            color: #e0e0e0;
+            line-height: 1.6;
+        }
+        .ifthen-note {
+            font-size: 0.72rem;
+            color: #888;
+            text-align: center;
+            margin: 12px 0 0 0;
+        }
+
         .bridge-section {
             margin-top: 20px;
             padding: 28px 24px;
@@ -287,6 +336,8 @@
             <div class="stat-item"><span class="stat-label">成熟数(M)</span><span class="stat-val" id="val-m"></span></div>
         </div>
 
+        <div id="ifthen-card" class="ifthen-section"></div>
+
         <div class="bridge-section">
             <p class="bridge-lead">ゲームで言えば、これがあなたの<strong>「初期設定」</strong>。</p>
             <p class="bridge-sub">初期設定は、変えられます。<br>自分のパターンを知ることが、最初の一歩です。</p>
@@ -386,6 +437,27 @@ function calculate() {
         document.getElementById('res-char').innerText = charData.name;
         document.getElementById('res-status').innerText = `状態：${charData.status}`;
         document.getElementById('res-desc').innerText = charData.desc;
+
+        // If-Thenカード表示
+        const ifthenData = {
+            1: { label: "「証明をやめる」練習",    if: "「もっとできたはずなのに」と自分を責め始めたら",  then: "「80%でよし、出した」と唱えて、その場で手を止める" },
+            2: { label: "「断る」練習",             if: "「ノー」と言えず、返事を先延ばしにしたい感じたら", then: "「ちょっと確認してから返事する」と伝えて、24時間置く" },
+            3: { label: "「本音を出す」練習",       if: "「本音を出したらつまらないと思われるかも」と感じたら", then: "「今ちょっと疲れてる」とだけ、一人に伝える（LINEでもOK）" },
+            4: { label: "「未完成で出す」練習",     if: "「完璧になってから出そう」と感じて動けなくなったら", then: "「未完成で出す」と唱えて、今の状態のまま1つだけ動く" },
+            5: { label: "「今ここに留まる」練習",   if: "「もっといい方法があるかも」と感じて別のものを探し始めたら", then: "「今日はこれだけ」と唱えて、目の前の1つだけ続ける" },
+            6: { label: "「ジャッジに気づく」練習", if: "「ちゃんとしなきゃ」と自分を責め始めたら",          then: "「今の私、ジャッジしてるな」と気づいて、そのまま3秒放置する" },
+            7: { label: "「考える前に動く」練習",   if: "「もう少し考えてから」と感じて動けなくなったら",     then: "「5秒で動く」と唱えて、考える前に1つだけ行動する" },
+            8: { label: "「手放す」練習",           if: "「自分でやらないと崩れる」と感じて手放せなくなったら", then: "「これは渡せる」と唱えて、1つだけ誰かに任せる" },
+            9: { label: "「まず自分を先に」練習",   if: "無理な頼みを引き受けそうになったら",                then: "「ありがとう、でも今は難しい」とだけ伝える（理由の説明は不要）" }
+        };
+        const card = ifthenData[oriFinal] || ifthenData[1];
+        document.getElementById('ifthen-card').innerHTML = `
+            <p class="ifthen-title">🗡️ あなたの攻略法カード</p>
+            <p class="ifthen-label">${card.label}</p>
+            <div class="ifthen-row"><span class="ifthen-badge if-badge">IF</span><span class="ifthen-text">${card.if}</span></div>
+            <div class="ifthen-row"><span class="ifthen-badge then-badge">THEN</span><span class="ifthen-text">${card.then}</span></div>
+            <p class="ifthen-note">※ 音声③を聴くと、このカードの使い方がわかります</p>
+        `;
 
         document.getElementById('result-area').style.display = 'block';
         window.scrollTo({ top: document.getElementById('result-area').offsetTop - 20, behavior: 'smooth' });
