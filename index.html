@@ -229,11 +229,24 @@
             color: #e0e0e0;
             line-height: 1.6;
         }
-        .ifthen-note {
-            font-size: 0.72rem;
-            color: #888;
+        .ifthen-locked {
             text-align: center;
-            margin: 12px 0 0 0;
+            padding: 14px 0 4px;
+        }
+        .ifthen-lock-icon {
+            font-size: 1.6rem;
+            margin-bottom: 8px;
+        }
+        .ifthen-lock-text {
+            font-size: 0.88rem;
+            color: #ccc;
+            line-height: 1.7;
+            margin: 0 0 6px 0;
+        }
+        .ifthen-lock-sub {
+            font-size: 0.75rem;
+            color: #888;
+            margin: 0;
         }
 
         .bridge-section {
@@ -294,7 +307,7 @@
             font-weight: bold;
             flex-shrink: 0;
         }
-        .line-text { flex: 1; text-align: center; }
+        .line-text { flex: 1; text-align: center; white-space: nowrap; }
         .line-arrow { font-size: 0.85rem; flex-shrink: 0; }
         .line-note { margin: 12px 0 0 0; font-size: 0.75rem; color: #888; }
     </style>
@@ -454,9 +467,11 @@ function calculate() {
         document.getElementById('ifthen-card').innerHTML = `
             <p class="ifthen-title">🗡️ あなたの攻略法カード</p>
             <p class="ifthen-label">${card.label}</p>
-            <div class="ifthen-row"><span class="ifthen-badge if-badge">IF</span><span class="ifthen-text">${card.if}</span></div>
-            <div class="ifthen-row"><span class="ifthen-badge then-badge">THEN</span><span class="ifthen-text">${card.then}</span></div>
-            <p class="ifthen-note">※ 音声③を聴くと、このカードの使い方がわかります</p>
+            <div class="ifthen-locked">
+                <div class="ifthen-lock-icon">🔒</div>
+                <p class="ifthen-lock-text">このカードのIF／THENは<br>音声③を聴いた方へのプレゼントです</p>
+                <p class="ifthen-lock-sub">LINEに登録すると、順番にお届けします</p>
+            </div>
         `;
 
         document.getElementById('result-area').style.display = 'block';
