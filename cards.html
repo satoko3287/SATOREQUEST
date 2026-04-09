@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>攻略法カード｜SATOREQUEST</title>
+    <style>
+        :root {
+            --game-gold: #ffcf4b;
+            --game-bg: #0f0c29;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
+            background: linear-gradient(to bottom, #0f0c29, #302b63, #24243e);
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 30px 20px 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .logo {
+            font-size: 0.8rem;
+            letter-spacing: 4px;
+            color: var(--game-gold);
+            opacity: 0.7;
+            margin-bottom: 24px;
+        }
+        .card-wrap {
+            width: 100%;
+            max-width: 500px;
+        }
+        .kara-badge {
+            display: inline-block;
+            background: var(--game-gold);
+            color: #0f0c29;
+            font-size: 0.75rem;
+            font-weight: bold;
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+        .kara-name {
+            font-size: 1.1rem;
+            color: var(--game-gold);
+            margin-bottom: 6px;
+            letter-spacing: 1px;
+        }
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 28px;
+            line-height: 1.4;
+        }
+        .card-block {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,207,75,0.3);
+            border-radius: 16px;
+            padding: 24px 22px;
+            margin-bottom: 20px;
+        }
+        .if-then-row {
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+            padding: 14px 0;
+        }
+        .if-then-row + .if-then-row {
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        .badge {
+            flex-shrink: 0;
+            font-size: 0.78rem;
+            font-weight: bold;
+            padding: 4px 10px;
+            border-radius: 6px;
+            margin-top: 2px;
+            min-width: 52px;
+            text-align: center;
+        }
+        .if-badge   { background: rgba(255,255,255,0.12); color: #bbb; }
+        .then-badge { background: var(--game-gold); color: #0f0c29; }
+        .row-text {
+            font-size: 0.95rem;
+            line-height: 1.7;
+            color: #e0e0e0;
+        }
+        .message-block {
+            background: rgba(26,42,108,0.5);
+            border-left: 3px solid var(--game-gold);
+            border-radius: 0 12px 12px 0;
+            padding: 18px 20px;
+            margin-bottom: 20px;
+        }
+        .message-label {
+            font-size: 0.72rem;
+            color: var(--game-gold);
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        .message-text {
+            font-size: 0.88rem;
+            line-height: 1.8;
+            color: #ccc;
+        }
+        .hint-box {
+            text-align: center;
+            padding: 20px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+            border: 1px dashed rgba(255,207,75,0.2);
+        }
+        .hint-text {
+            font-size: 0.82rem;
+            color: #888;
+            line-height: 1.7;
+        }
+        .hint-text strong {
+            color: #bbb;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 32px;
+            font-size: 0.8rem;
+            color: #666;
+            text-decoration: none;
+        }
+        .not-found {
+            text-align: center;
+            padding: 60px 20px;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <p class="logo">SATOREQUEST</p>
+    <div class="card-wrap" id="content">
+        <div class="not-found">読み込み中...</div>
+    </div>
+
+<script>
+const CARDS = {
+    1: {
+        karaName: "勇敢なる戦士",
+        cardTitle: "「証明をやめる」練習",
+        if:   "「もっとできたはずなのに」と自分を責め始めたら",
+        then: "「80%でよし、出した」と唱えて、その場で手を止める",
+        message: "頑張ることが得意なあなたは、止まることが一番難しいかもしれない。\nでもその「止まる」ができたとき、力の向きが変わり始めます。\n1回だけ、試してみてください。"
+    },
+    2: {
+        karaName: "調和のエンチャンター",
+        cardTitle: "「断る」練習",
+        if:   "「ノー」と言えず、返事を先延ばしにしたい感じたら",
+        then: "「ちょっと確認してから返事する」と伝えて、24時間置く",
+        message: "断らなくていいです。ただ、24時間だけ置く。\nその間に「本当にやりたいか」が少し見えてきます。\nまず1回、試してみてください。"
+    },
+    3: {
+        karaName: "無邪気な吟遊詩人",
+        cardTitle: "「本音を出す」練習",
+        if:   "「本音を出したらつまらないと思われるかも」と感じたら",
+        then: "「今ちょっと疲れてる」とだけ、一人に伝える（LINEでもOK）",
+        message: "小さな本音でいい。「つらい」でも「しんどい」でもなく\n「ちょっと疲れてる」の一言だけ。\n誰かひとりに、今日伝えてみてください。"
+    },
+    4: {
+        karaName: "大地の石工",
+        cardTitle: "「未完成で出す」練習",
+        if:   "「完璧になってから出そう」と感じて動けなくなったら",
+        then: "「未完成で出す」と唱えて、今の状態のまま1つだけ動く",
+        message: "「まだ途中なんだけど」の一言が言えれば十分です。\n完璧を待っていると、いつまでも出せない。\n今日、ひとつだけ出してみてください。"
+    },
+    5: {
+        karaName: "自由なる旅人",
+        cardTitle: "「今ここに留まる」練習",
+        if:   "「もっといい方法があるかも」と感じて別のものを探し始めたら",
+        then: "「今日はこれだけ」と唱えて、目の前の1つだけ続ける",
+        message: "飽きても大丈夫。飽きながら留まることが、今日の成功です。\n「これ」だけ。それだけでいい。"
+    },
+    6: {
+        karaName: "愛のヒーラー",
+        cardTitle: "「ジャッジに気づく」練習",
+        if:   "「ちゃんとしなきゃ」と自分を責め始めたら",
+        then: "「今の私、ジャッジしてるな」と気づいて、そのまま3秒放置する",
+        message: "やめなくていい。気づくだけでいい。\n「ジャッジしてるな」と思えた瞬間が、もう変化の始まりです。\n今日1回、見つけてみてください。"
+    },
+    7: {
+        karaName: "孤独の賢者",
+        cardTitle: "「考える前に動く」練習",
+        if:   "「もう少し考えてから」と感じて動けなくなったら",
+        then: "「5秒で動く」と唱えて、考える前に1つだけ行動する",
+        message: "間違えても大丈夫。考えてから動くより、動いてから考える方が\nあなたの力は100倍発揮されます。\n5秒、試してみてください。"
+    },
+    8: {
+        karaName: "力の王",
+        cardTitle: "「手放す」練習",
+        if:   "「自分でやらないと崩れる」と感じて手放せなくなったら",
+        then: "「これは渡せる」と唱えて、1つだけ誰かに任せる",
+        message: "崩れません。むしろ、手放した分だけあなたの力が別のところに向かいます。\n「お願いしていい？」の一言だけでOKです。"
+    },
+    9: {
+        karaName: "慈悲の僧侶",
+        cardTitle: "「まず自分を先に」練習",
+        if:   "無理な頼みを引き受けそうになったら",
+        then: "「ありがとう、でも今は難しい」とだけ伝える（理由の説明は不要）",
+        message: "理由を説明しなくていい。「今は難しい」だけで十分です。\nあなたが満たされていることで、本当に大切な人を助けられるようになります。\n今日1回だけ、自分を先にしてみてください。"
+    }
+};
+
+function getParam(key) {
+    return new URLSearchParams(window.location.search).get(key);
+}
+
+const k = parseInt(getParam('k'));
+const data = CARDS[k];
+const el = document.getElementById('content');
+
+if (!data) {
+    el.innerHTML = '<div class="not-found"><p>カードが見つかりません。<br>URLを確認してください。</p></div>';
+} else {
+    el.innerHTML = `
+        <p class="kara-badge">殻 ${k}</p>
+        <p class="kara-name">${data.karaName}</p>
+        <h1 class="card-title">🗡️ ${data.cardTitle}</h1>
+
+        <div class="card-block">
+            <div class="if-then-row">
+                <span class="badge if-badge">IF</span>
+                <span class="row-text">${data.if}</span>
+            </div>
+            <div class="if-then-row">
+                <span class="badge then-badge">THEN</span>
+                <span class="row-text">${data.then}</span>
+            </div>
+        </div>
+
+        <div class="message-block">
+            <p class="message-label">さとこより</p>
+            <p class="message-text">${data.message.replace(/\n/g, '<br>')}</p>
+        </div>
+
+        <div class="hint-box">
+            <p class="hint-text">
+                <strong>うまくいかなくてOKです。</strong><br>
+                「あ、またキャラクター設定が出たな」と気づけたら、<br>
+                それだけで十分です。<br><br>
+                試したら、LINEに <strong>「やってみた」</strong> と返信してください。
+            </p>
+        </div>
+
+        <a class="back-link" href="index.html">← 診断ページに戻る</a>
+    `;
+}
+</script>
+</body>
+</html>
