@@ -439,7 +439,9 @@ function calculate() {
         document.getElementById('val-p').innerText = `${pSum} ／ ${pFinal}`;
         document.getElementById('val-m').innerText = `${lpFinal+dFinal} ／ ${mFinal}`;
 
-        const tIdx = (lpFinal > 9 && ![11, 22, 33].includes(lpFinal)) ? getRoot(lpFinal) : (lpFinal > 9 ? getRoot(lpFinal) : lpFinal);
+        // LPの表示はマスターナンバーのまま、チャレンジキャラだけ一桁へ還元する
+const challengeThemeMap = { 11: 2, 22: 4, 33: 6 };
+const tIdx = challengeThemeMap[lpFinal] || lpFinal;
         const oIdx = (oriFinal > 9) ? getRoot(oriFinal) : oriFinal;
         
         const themeData = MASTER_DATA[tIdx] || MASTER_DATA["1"];
